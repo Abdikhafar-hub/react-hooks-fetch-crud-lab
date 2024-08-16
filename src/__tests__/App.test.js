@@ -78,17 +78,23 @@ test("deletes the question when the delete button is clicked", async () => {
 test("updates the answer when the dropdown is changed", async () => {
   const { rerender } = render(<App />);
 
-  fireEvent.click(screen.queryByText(/View Questions/));
+  fireEvent.click(screen.getByText(/View Questions/));
 
+  // Ensure questions are loaded
   await screen.findByText(/lorem testum 2/g);
 
-  fireEvent.change(screen.queryAllByLabelText(/Correct Answer/)[0], {
+  // Change the dropdown value
+  fireEvent.change(screen.getAllByLabelText(/Correct Answer/)[0], {
     target: { value: "3" },
   });
 
-  expect(screen.queryAllByLabelText(/Correct Answer/)[0].value).toBe("3");
+  // Ensure dropdown value is updated in the DOM
+  expect(screen.getAllByLabelText(/Correct Answer/)[0].value).toBe("3");
 
+  // Re-render the component and verify value persists
   rerender(<App />);
+  await screen.findByText(/lorem testum 2/g);
 
-  expect(screen.queryAllByLabelText(/Correct Answer/)[0].value).toBe("3");
+  // Verify the updated dropdown value
+  expect(screen.getAllByLabelText(/Correct Answer/)[0].value).toBe("3");
 });
